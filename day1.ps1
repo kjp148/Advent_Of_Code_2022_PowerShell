@@ -20,3 +20,22 @@ foreach ($Line in $RawInput)
 }
 
 Write-Host "Day 1 p1: $($HighestCount)"
+
+# Find top three total
+$CurrentTotal = 0
+$ElfCalorieArray = @()
+foreach ($Line in $RawInput)
+{
+    if ($Line -eq "")
+    {
+        $ElfCalorieArray += $CurrentTotal
+        $CurrentTotal = 0
+    }
+    else
+    {
+        $CurrentTotal += $Line
+    }
+}
+
+$SortedCalorieArray = ($ElfCalorieArray | Sort-Object -Descending)
+Write-Host "Day 2 p2: $($SortedCalorieArray[0] + $SortedCalorieArray[1] + $SortedCalorieArray[2])"
