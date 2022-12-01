@@ -1,9 +1,9 @@
-$RawInput = Get-Content .\input\day1.txt
+$RawInput = Get-Content .\input\day1.txt -Raw
 
 # Find largest calorie count
 $HighestCount = 0
 $CurrentTotal = 0
-foreach ($Line in $RawInput)
+foreach ($Line in ($RawInput -split "\n"))
 {
     if ($Line -eq "")
     {
@@ -24,7 +24,7 @@ Write-Host "Day 1 p1: $($HighestCount)"
 # Find top three total
 $CurrentTotal = 0
 $ElfCalorieArray = @()
-foreach ($Line in $RawInput)
+foreach ($Line in ($RawInput -split "\n"))
 {
     if ($Line -eq "")
     {
