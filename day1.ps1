@@ -1,41 +1,5 @@
 $RawInput = Get-Content .\input\day1.txt -Raw
+$CalorieTotalArray = (((Get-Content .\input\day1.txt -Raw) -split "\n\n") | ForEach-Object {($_ -split "\n" | Measure-Object -Sum).Sum} | Sort-Object -Descending)
 
-# Find largest calorie count
-$HighestCount = 0
-$CurrentTotal = 0
-foreach ($Line in ($RawInput -split "\n"))
-{
-    if ($Line -eq "")
-    {
-        if ($HighestCount -lt $CurrentTotal)
-        {
-            $HighestCount = $CurrentTotal
-        }
-        $CurrentTotal = 0
-    }
-    else
-    {
-        $CurrentTotal += $Line
-    }
-}
-
-Write-Host "Day 1 p1: $($HighestCount)"
-
-# Find top three total
-$CurrentTotal = 0
-$ElfCalorieArray = @()
-foreach ($Line in ($RawInput -split "\n"))
-{
-    if ($Line -eq "")
-    {
-        $ElfCalorieArray += $CurrentTotal
-        $CurrentTotal = 0
-    }
-    else
-    {
-        $CurrentTotal += $Line
-    }
-}
-
-$SortedCalorieArray = ($ElfCalorieArray | Sort-Object -Descending)
-Write-Host "Day 2 p2: $($SortedCalorieArray[0] + $SortedCalorieArray[1] + $SortedCalorieArray[2])"
+Write-Host "Day 1 p1: $($CalorieTotalArray[0])"
+Write-Host "Day 2 p2: $($CalorieTotalArray[0] + $CalorieTotalArray[1] + $CalorieTotalArray[2])"
