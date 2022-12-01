@@ -1,4 +1,3 @@
-$RawInput = Get-Content .\input\day1.txt -Raw
 $CalorieTotalArray = (((Get-Content .\input\day1.txt -Raw) -split "\n\n") | ForEach-Object {($_ -split "\n" | Measure-Object -Sum).Sum} | Sort-Object -Descending)
 
 Write-Host "Day 1 p1: $($CalorieTotalArray[0])"
