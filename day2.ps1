@@ -9,9 +9,9 @@ Get-Content .\input\day2.txt | ForEach-Object {
         "A" {
             switch ($MyMove)
             {
-                "X" {$Part1PointsTotal += 1 + 3; $Part2PointsTotal += 2 + 0} # Rock/Lose(Paper)
+                "X" {$Part1PointsTotal += 1 + 3; $Part2PointsTotal += 3 + 0} # Rock/Lose(Scissors)
                 "Y" {$Part1PointsTotal += 2 + 6; $Part2PointsTotal += 1 + 3} # Paper/Draw(Rock)
-                "Z" {$Part1PointsTotal += 3 + 0; $Part2PointsTotal += 3 + 6} # Scissors/Win(Scissors)
+                "Z" {$Part1PointsTotal += 3 + 0; $Part2PointsTotal += 2 + 6} # Scissors/Win(Paper)
             }
         }
         "B" {
