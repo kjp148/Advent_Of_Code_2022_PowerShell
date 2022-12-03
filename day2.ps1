@@ -8,11 +8,11 @@ Get-Content .\input\day2.txt | ForEach-Object {
         "A" {
             switch ($MyMove)
             {
-                "X" {$PointsTotal += 1 + 3}
-                "Y" {$PointsTotal += 1 + 6}
-                "Z" {$PointsTotal += 1}
+                "X" {$PointsTotal += 1 + 3; Write-Host "$OpponentMove $MyMove = 4 | $PointsTotal"}
+                "Y" {$PointsTotal += 1 + 6; Write-Host "$OpponentMove $MyMove = 7 | $PointsTotal"}
+                "Z" {$PointsTotal += 1; Write-Host "$OpponentMove $MyMove = 1 | $PointsTotal"}
             }
-        }
+        }<#
         "B" {
             switch ($MyMove)
             {
@@ -28,7 +28,7 @@ Get-Content .\input\day2.txt | ForEach-Object {
                 "Y" {$PointsTotal += 3}
                 "Z" {$PointsTotal += 3 + 3}
             }
-        }
+        }#>
     }
 }
 
