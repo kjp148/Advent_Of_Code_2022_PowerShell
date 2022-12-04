@@ -20,15 +20,19 @@ $FullOverlapCount = 0
 $PartialOverlapCount = 0
 foreach ($Pair in $PairsOfElves)
 {
-    $FirstResult = (($Pair.First.Start -le $Pair.Second.Start) -and ($Pair.First.End -ge $Pair.Second.End))
-    $SecondResult = (($Pair.Second.Start -le $Pair.First.Start) -and ($Pair.Second.End -ge $Pair.First.End))
-    if ($FirstResult -or $SecondResult) {$FullOverlapCount++}
+    $Results = @(
+        (($Pair.First.Start -le $Pair.Second.Start) -and ($Pair.First.End -ge $Pair.Second.End)),
+        (($Pair.Second.Start -le $Pair.First.Start) -and ($Pair.Second.End -ge $Pair.First.End))
+    )
+    if ($Results -contains $true) {$FullOverlapCount++}
 
-    $FirstResult = (($Pair.First.Start -le $Pair.Second.Start) -and ($Pair.First.End -ge $Pair.Second.Start))
-    $SecondResult = (($Pair.First.Start -le $Pair.Second.End) -and ($Pair.First.End -ge $Pair.Second.End))
-    $ThirdResult = (($Pair.Second.Start -le $Pair.First.Start) -and ($Pair.Second.End -ge $Pair.First.Start))
-    $FourthResult = (($Pair.Second.Start -le $Pair.First.End) -and ($Pair.Second.End -ge $Pair.First.End))
-    if ($FirstResult -or $SecondResult -or $ThirdResult -or $FourthResult) {$PartialOverlapCount++}
+    $Results = @(
+        (($Pair.First.Start -le $Pair.Second.Start) -and ($Pair.First.End -ge $Pair.Second.Start)),
+        (($Pair.First.Start -le $Pair.Second.End) -and ($Pair.First.End -ge $Pair.Second.End)),
+        (($Pair.Second.Start -le $Pair.First.Start) -and ($Pair.Second.End -ge $Pair.First.Start)),
+        (($Pair.Second.Start -le $Pair.First.End) -and ($Pair.Second.End -ge $Pair.First.End))
+    )
+    if ($Results -contains $true) {$PartialOverlapCount++}
 }
 
 Write-Host "Day 4 p1: $FullOverlapCount"
