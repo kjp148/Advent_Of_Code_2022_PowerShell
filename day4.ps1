@@ -25,14 +25,11 @@ foreach ($Line in (Get-Content .\Input\day4.txt))
 
 # Count how many pairs overlap
 $OverlapCount = 0
-<#Debug#>$Overlap=$false
 foreach ($Pair in $PairsOfElves)
 {
     $FirstResult = (($Pair.First.Start -le $Pair.Second.Start) -and ($Pair.First.End -ge $Pair.Second.End))
     $SecondResult = (($Pair.Second.Start -le $Pair.First.Start) -and ($Pair.Second.End -ge $Pair.First.End))
-    if ($FirstResult -or $SecondResult) {$OverlapCount++; <#Debug#>$Overlap=$true}
-    Write-Host "Debug: $($Pair.First.Start)-$($Pair.First.End),$($Pair.Second.Start)-$($Pair.Second.End) = $Overlap | $OverlapCount"
-    <#Debug#>$Overlap=$false
+    if ($FirstResult -or $SecondResult) {$OverlapCount++}
 }
 
 Write-Host "Day 4 p1: $OverlapCount"
