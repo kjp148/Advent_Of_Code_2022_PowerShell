@@ -15,13 +15,21 @@ foreach ($Line in (Get-Content .\Input\day4.txt))
     }
 }
 
-# Count how many pairs overlap fully
+# Count how many pairs overlap fully/partially
 $FullOverlapCount = 0
+$PartialOverlapCount = 0
 foreach ($Pair in $PairsOfElves)
 {
     $FirstResult = (($Pair.First.Start -le $Pair.Second.Start) -and ($Pair.First.End -ge $Pair.Second.End))
     $SecondResult = (($Pair.Second.Start -le $Pair.First.Start) -and ($Pair.Second.End -ge $Pair.First.End))
     if ($FirstResult -or $SecondResult) {$FullOverlapCount++}
+
+    $FirstResult = (($Pair.First.Start -le $Pair.Second.Start) -and ($Pair.First.End -ge $Pair.Second.Start))
+    $SecondResult = (($Pair.First.Start -le $Pair.Second.End) -and ($Pair.First.End -ge $Pair.Second.End))
+    $ThirdResult = (($Pair.Second.Start -le $Pair.First.Start) -and ($Pair.Second.End -ge $Pair.First.Start))
+    $FourthResult = (($Pair.Second.Start -le $Pair.First.End) -and ($Pair.Second.End -ge $Pair.First.End))
+    if ($FirstResult -or $SecondResult -or $ThirdResult -or $FourthResult) {$PartialOverlapCount++}
 }
 
 Write-Host "Day 4 p1: $FullOverlapCount"
+Write-Host "Day 4 p2: $PartialOverlapCount"
