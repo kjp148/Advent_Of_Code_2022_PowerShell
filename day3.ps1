@@ -1,8 +1,21 @@
-$RucksackArray = @() # Split into each rucksack with compartments a and b
-Get-Content .\Input\day3.txt | ForEach-Object {
+$InputArray = (Get-Content .\Input\day3.txt)
+# Split into each rucksack with compartments a and b
+$RucksackArray = @()
+$InputArray | ForEach-Object {
     $RucksackArray += @{
         a = $_.Substring(0, ($_.Length / 2)); # First half
         b = $_.Substring($_.Length / 2) # Second half
+    }
+}
+
+ # Seperate rucksacks into groups of three
+$ElfGroupArray = @()
+for ($i = 0; $i -lt $InputArray.Length; $i += 3)
+{
+    $ElfGroupArray += @{
+        a = $InputArray[$i];
+        b = $InputArray[$i + 1];
+        c = $InputArray[$i + 2]
     }
 }
 
