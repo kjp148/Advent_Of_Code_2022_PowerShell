@@ -1,4 +1,5 @@
 $InputArray = (Get-Content .\Input\day3.txt)
+
 # Split into each rucksack with compartments a and b
 $RucksackArray = @()
 $InputArray | ForEach-Object {
@@ -28,17 +29,32 @@ for ($i = 0; $i -lt 26; $i++)
 }
 
 # Find letter that appears in both compartments
-$PrioritySum = 0
+$Part1PrioritySum = 0
 foreach ($Rucksack in $RucksackArray)
 {
-    #Strip of duplicates then iterate through first compartment to see if any elements are in the second compartment
+    # Strip of duplicates then iterate through first compartment to see if any elements are in the second compartment
     $Rucksack.a.ToCharArray() | Select-Object -Unique | ForEach-Object {
         if ($Rucksack.b.Contains($_))
         {
-            if ([int][char]$_ -gt 96) {$PrioritySum += $PriorityTable."Lower$($_)"}
-            else {$PrioritySum += $PriorityTable."Upper$($_)"}
+            if ([int][char]$_ -gt 96) {$Part1PrioritySum += $PriorityTable."Lower$($_)"}
+            else {$Part1PrioritySum += $PriorityTable."Upper$($_)"}
         }
     }
 }
 
-Write-Host "Day 3 p1: $PrioritySum"
+# Find common letter and sum priority for elf groups
+$Part2PrioritySum = 0
+foreach ($ElfGroup in $ElfGroupArray)
+{
+    # Strip duplicates from first rucksack then iterate through both other rucksacks until a match is found in both
+    $ElfGroup.a.ToCharArray() | Select-Object -Unique | ForEach-Object {
+        if ($ElfGroup.b.Contains($_) -and $ElfGroup.c.Contains($_))
+        {
+            if ([int][char]$_ -gt 96) {$Part2PrioritySum += $PriorityTable."Lower$($_)"}
+            else {$Part2PrioritySum += $PriorityTable."Upper$($_)"}
+        }
+    }
+}
+
+Write-Host "Day 3 p1: $Part1PrioritySum"
+Write-Host "Day 3 p2: $Part2PrioritySum"
