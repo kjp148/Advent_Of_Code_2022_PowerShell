@@ -1,11 +1,3 @@
-<# Pseduo
-    Seperate into object Pair.First.Start Pair.First.End Pair.Second.Start Pair.First.End
-        using foreach line -> split "," | foreach-object $_ -split "-"
-    foreach pair
-        if Pair.First.Start - Pair.Second.Start -gt 0 AND Pair.First.End - Pair.Second.End -gt 0 OR (REVERSE pair.second.start - pair.first.start etc.)
-            PairsEncapsulatingOther++
-#>
-
 # Seperate each line into an object with two pairs of pairs
 $PairsOfElves = @()
 foreach ($Line in (Get-Content .\Input\day4.txt))
@@ -23,13 +15,13 @@ foreach ($Line in (Get-Content .\Input\day4.txt))
     }
 }
 
-# Count how many pairs overlap
-$OverlapCount = 0
+# Count how many pairs overlap fully
+$FullOverlapCount = 0
 foreach ($Pair in $PairsOfElves)
 {
     $FirstResult = (($Pair.First.Start -le $Pair.Second.Start) -and ($Pair.First.End -ge $Pair.Second.End))
     $SecondResult = (($Pair.Second.Start -le $Pair.First.Start) -and ($Pair.Second.End -ge $Pair.First.End))
-    if ($FirstResult -or $SecondResult) {$OverlapCount++}
+    if ($FirstResult -or $SecondResult) {$FullOverlapCount++}
 }
 
-Write-Host "Day 4 p1: $OverlapCount"
+Write-Host "Day 4 p1: $FullOverlapCount"
