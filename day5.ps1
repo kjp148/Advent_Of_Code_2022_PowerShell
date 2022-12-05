@@ -30,7 +30,8 @@ foreach ($Instruction in $InputArray[($InstructionsBeginIndex)..($InputArray.Len
     }
 }
 
-$ContainerArrayPart2 = @() + $ContainerArray # Create copy for part 2 before ContainerArray is modified.
+$ContainerArrayPart2 = @()
+$ContainerArrayPart2 += $ContainerArray # Create copy for part 2 before ContainerArray is modified.
 
 # PART 1 Perform instructions on ContainerArray
 foreach ($Instruction in $InstructionsArray)
@@ -49,10 +50,20 @@ foreach ($Instruction in $InstructionsArray)
 foreach ($Instruction in $InstructionsArray)
 {
     $Src = $Instruction.Source
+    Write-Host "Debug: move $($Instruction.Amount) from $Src to $($Instruction.Destination)"
+    Write-Host "Debug before: $($ContainerArrayPart2[$Instruction.Source]) -> $($ContainerArrayPart2[$Instruction.Destination])"
     # Add section to end of destination array
-    $ContainerArrayPart2[$Instruction.Destination] += ($ContainerArrayPart2[$Src][($ContainerArrayPart2[$Src].Length - $Instruction.Amount - 1)..($ContainerArrayPart2[$Src].Length - 1)])
+    $ContainerArrayPart2[$Instruction.Destination] += ($ContainerArrayPart2[$Src][($ContainerArrayPart2[$Src].Length - $Instruction.Amount)..($ContainerArrayPart2[$Src].Length - 1)])
     # Remove AMOUNT elements from source array by setting it equal to itself minus AMOUNT elements.
-    $ContainerArrayPart2[$Src] = $ContainerArrayPart2[$Src][0..($ContainerArrayPart2[$Src].Length - $Instruction.Amount - 1)]
+    if ($Instruction.Amount -eq $ContainerArrayPart2[$Src].Length)
+    {
+        $ContainerArrayPart2[$Src] = @()
+    }
+    else
+    {
+        $ContainerArrayPart2[$Src] = $ContainerArrayPart2[$Src][0..($ContainerArrayPart2[$Src].Length - $Instruction.Amount - 1)]
+    }
+    Write-Host "Debug after:  $($ContainerArrayPart2[$Instruction.Source]) -> $($ContainerArrayPart2[$Instruction.Destination])"
 }
 
 # PART 1 Create string of top containers
