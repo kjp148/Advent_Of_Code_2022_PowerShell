@@ -28,19 +28,32 @@
 
 # Get current container state
 $InputArray = Get-Content .\Input\day5.txt
-$RawContainerArray = $InputArray[0..($InputArray.IndexOf(($InputArray -like ("move*"))[0]) - 3)]
+$InstructionsBeginIndex = $InputArray.IndexOf(($InputArray -like ("move*"))[0])
+$RawContainerArray = $InputArray[0..($InstructionsBeginIndex - 3)]
 [array]::Reverse($RawContainerArray)
-$ContainerArray = [array[]]::new(($InputArray[($InputArray.IndexOf(($InputArray -like ("move*"))[0]) - 2)] -replace " ", "").length) # Create new container array with length of the available container slots.
-foreach ($Line in $RawContainerArray)
+$ContainerArray = [array[]]::new(($InputArray[$InstructionsBeginIndex - 2] -replace " ", "").length) # Create new container array with length of the available container slots.
+foreach ($Row in $RawContainerArray)
 {
     # Loop through every four characters starting at position 2
     $ContainerPositionIterate = 0
-    for ($i = 1; $i -lt $Line.Length; $i += 4)
+    for ($i = 1; $i -lt $Row.Length; $i += 4)
     {
-        if ($Line.ToCharArray()[$i] -ne " ")
+        if ($Row.ToCharArray()[$i] -ne " ")
         {
-            $ContainerArray[$ContainerPositionIterate] += $Line.ToCharArray()[$i]
+            $ContainerArray[$ContainerPositionIterate] += $Row.ToCharArray()[$i]
         }
         $ContainerPositionIterate++
+    }
+}
+
+# Get an array of all instructions
+$InstructionsArray = @()
+foreach ($Instruction in $InputArray[($InstructionsBeginIndex)..($InputArray.Length - 1)])
+{
+    $InstructionSplit = $Instruction -split " "
+    $InstructionsArray += @{
+        Amount = [int]$InstructionSplit[1];
+        Source = [int]$InstructionSplit[3];
+        Destination = [int]$InstructionSplit[5]
     }
 }
