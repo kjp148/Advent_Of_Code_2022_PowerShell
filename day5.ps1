@@ -30,3 +30,17 @@
 $InputArray = Get-Content .\Input\day5.txt
 $RawContainerArray = $InputArray[0..($InputArray.IndexOf(($InputArray -like ("move*"))[0]) - 3)]
 [array]::Reverse($RawContainerArray)
+$ContainerArray = [array[]]::new(($InputArray[($InputArray.IndexOf(($InputArray -like ("move*"))[0]) - 2)] -replace " ", "").length) # Create new container array with length of the available container slots.
+foreach ($Line in $RawContainerArray)
+{
+    # Loop through every four characters starting at position 2
+    $ContainerPositionIterate = 0
+    for ($i = 1; $i -lt $Line.Length; $i += 4)
+    {
+        if ($Line.ToCharArray()[$i] -ne " ")
+        {
+            $ContainerArray[$ContainerPositionIterate] += $Line.ToCharArray()[$i]
+        }
+        $ContainerPositionIterate++
+    }
+}
