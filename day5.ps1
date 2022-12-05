@@ -25,3 +25,8 @@
             $TopContainers += $_[$_.Count - 1]
         }
 #>
+
+# Get current container state
+$InputArray = Get-Content .\Input\day5.txt
+$RawContainerArray = $InputArray[0..($InputArray.IndexOf(($InputArray -like ("move*"))[0]) - 3)]
+[array]::Reverse($RawContainerArray)
