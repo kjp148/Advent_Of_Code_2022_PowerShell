@@ -30,13 +30,14 @@ foreach ($Instruction in $InputArray[($InstructionsBeginIndex)..($InputArray.Len
     }
 }
 
+# Perform instructions on the Container arrays
 $ContainerArrayPart2 = @()
 $ContainerArrayPart2 += $ContainerArray # Create copy for part 2 before ContainerArray is modified.
-
-# PART 1 Perform instructions on ContainerArray
 foreach ($Instruction in $InstructionsArray)
 {
     $Src = $Instruction.Source
+
+    # Part 1
     for ($i = 0; $i -lt $Instruction.Amount; $i++)
     {
         # Add element to end of destination array
@@ -44,38 +45,25 @@ foreach ($Instruction in $InstructionsArray)
         # Remove last element from source array by setting it equal to itself minus the last element.
         $ContainerArray[$Src] = $ContainerArray[$Src][0..($ContainerArray[$Src].Length - 2)]
     }
-}
 
-# PART 2 Perform instructions on ContainerArray
-foreach ($Instruction in $InstructionsArray)
-{
-    $Src = $Instruction.Source
-    Write-Host "Debug: move $($Instruction.Amount) from $Src to $($Instruction.Destination)"
-    Write-Host "Debug before: $($ContainerArrayPart2[$Instruction.Source]) -> $($ContainerArrayPart2[$Instruction.Destination])"
+    # Part 2
     # Add section to end of destination array
     $ContainerArrayPart2[$Instruction.Destination] += ($ContainerArrayPart2[$Src][($ContainerArrayPart2[$Src].Length - $Instruction.Amount)..($ContainerArrayPart2[$Src].Length - 1)])
     # Remove AMOUNT elements from source array by setting it equal to itself minus AMOUNT elements.
-    if ($Instruction.Amount -eq $ContainerArrayPart2[$Src].Length)
-    {
-        $ContainerArrayPart2[$Src] = @()
-    }
+    if ($Instruction.Amount -eq $ContainerArrayPart2[$Src].Length) {$ContainerArrayPart2[$Src] = @()} # Added a case for the source array having 0 elements as the index was overflowing.
     else
     {
         $ContainerArrayPart2[$Src] = $ContainerArrayPart2[$Src][0..($ContainerArrayPart2[$Src].Length - $Instruction.Amount - 1)]
     }
-    Write-Host "Debug after:  $($ContainerArrayPart2[$Instruction.Source]) -> $($ContainerArrayPart2[$Instruction.Destination])"
 }
 
-# PART 1 Create string of top containers
+# Create string of top containers
 $Part1ContainerString = ""
-$ContainerArray | ForEach-Object {
-    $Part1ContainerString += $_[$_.Length - 1]
-}
-
-# PART 2 Create string of top containers
 $Part2ContainerString = ""
-$ContainerArrayPart2 | ForEach-Object {
-    $Part2ContainerString += $_[$_.Length - 1]
+for ($i = 0; $i -lt $ContainerArray.Length; $i++)
+{
+    $Part1ContainerString += $ContainerArray[$i][$ContainerArray[$i].Length - 1]
+    $Part2ContainerString += $ContainerArrayPart2[$i][$ContainerArrayPart2[$i].Length - 1]
 }
 
 Write-Host "Day 5 p1: $Part1ContainerString"
