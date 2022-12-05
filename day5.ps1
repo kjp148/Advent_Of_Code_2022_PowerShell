@@ -1,31 +1,3 @@
-<#Pseudocode
-    Reverse loop through first X lines to get the container order.
-        Where X is the three lines less than the first occurence of "move"
-        Put this into a 2d array.
-        Use direct column position as the data doesn't change
-            Still check if the location is blank so it works for other similar inputs
-    Create array of instructions (Get-content starting at first "move")
-        amount = split " "[1]
-        source = split " "[3]
-        destination = split " "[5]
-
-    Perform each move
-        example: move 7 from 3 to 9
-        for ($i = 0; $i -lt amount; $i++)
-        {
-            Add element to end of destination array
-            $ContainerArray[destination].Add($ContainerArray[source][lastIndex])
-            Remove last element from source array by setting it equal to itself minus the last element.
-            $containerArray[source] = $containerArray[source][0..($ContainerArray[source].Count - 2)]
-        }
-
-    Get the top container of each array
-        $TopContainers = ""
-        $ContainerArray | Foreach-object {
-            $TopContainers += $_[$_.Count - 1]
-        }
-#>
-
 # Get current container state
 $InputArray = Get-Content .\Input\day5.txt
 $InstructionsBeginIndex = $InputArray.IndexOf(($InputArray -like ("move*"))[0])
@@ -53,7 +25,27 @@ foreach ($Instruction in $InputArray[($InstructionsBeginIndex)..($InputArray.Len
     $InstructionSplit = $Instruction -split " "
     $InstructionsArray += @{
         Amount = [int]$InstructionSplit[1];
-        Source = [int]$InstructionSplit[3];
-        Destination = [int]$InstructionSplit[5]
+        Source = ([int]$InstructionSplit[3] - 1);
+        Destination = ([int]$InstructionSplit[5] - 1)
     }
 }
+
+# Perform instructions on ContainerArray
+foreach ($Instruction in $InstructionsArray)
+{
+    for ($i = 0; $i -lt $Instruction.Amount; $i++)
+    {
+        # Add element to end of destination array
+        $ContainerArray[$Instruction.Destination] += ($ContainerArray[$Instruction.Source][$ContainerArray[$Instruction.Source].Length - 1])
+        # Remove last element from source array by setting it equal to itself minus the last element.
+        $ContainerArray[$Instruction.Source] = $ContainerArray[$Instruction.Source][0..($ContainerArray[$Instruction.Source].Length - 2)]
+    }
+}
+
+# Create string of top containers
+$Part1ContainerString = ""
+$ContainerArray | ForEach-Object {
+    $Part1ContainerString += $_[$_.Length - 1]
+}
+
+Write-Host "Day 5 p1: $Part1ContainerString"
