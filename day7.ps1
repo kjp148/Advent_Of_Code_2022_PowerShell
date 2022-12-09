@@ -1,4 +1,5 @@
 $CurrentFolder = ""
+$Folders = @{}
 foreach ($Command in (Get-Content .\Input\day7.txt))
 {
     switch (($Command -split " ")[0])
@@ -15,13 +16,17 @@ foreach ($Command in (Get-Content .\Input\day7.txt))
                     }
                     "/" { # Handling for root
                         $CurrentFolder = "/"
+                        $Folders[$CurrentFolder] = @()
                     }
-                    default {$CurrentFolder += "$(($Command -split " ")[2])/"} # Add folder to current path
+                    default { # Add folder to current path
+                        $CurrentFolder += "$(($Command -split " ")[2])/"
+                        $Folders[$CurrentFolder] = @()
+                    }
                 }
                 # Looks like we can ignore the ls command "ls" {#List}
             }
         }
         "dir" {}#Folder
-        default {}#File
+        default {$Folders[$CurrentFolder] += $Command}#File
     }
 }
