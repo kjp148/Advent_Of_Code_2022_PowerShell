@@ -1,13 +1,43 @@
+function Get-FolderSize ([Object]$Folder, [String]$Path) # Recursive function for finding the size of each folder
+{
+    $Folder.items | ForEach-Object {
+        if ($_ -like "dir *")
+        {
+            $NewPath = $Path + ($_ -split " ")[1] + "/"
+            $Folder.size += [int](Get-FolderSize -Folder $Folders[$NewPath] -Path $NewPath) # Add subfolder's size
+        }
+        else {$Folder.size += [int]($_ -split " ")[0]} # Add file's size
+    }
+    return $Folder.size # Return folder's size to parent folder
+}
+
+# Output tree
+function Get-FileTree ([Object]$Folder, [String]$Path) # Recursive function for finding the size of each folder
+{
+    Write-Host "$($Indent.Substring(0, $Indent.Length - 4))+---/$(($Path -split "/")[-2])"
+    $Folder.items | Sort-Object | ForEach-Object {
+        if ($_ -like "dir *")
+        {
+            $NewPath = $Path + ($_ -split " ")[1] + "/"
+            $Indent = "|   " + $Indent
+            Get-FileTree -Folder $Folders[$NewPath] -Path $NewPath
+            $Indent = $Indent.Substring(4)
+        }
+        else {Write-Host "$($Indent)    $_"}
+    }
+    Write-Host $Indent
+}
+
 # Map folder structure
 $CurrentFolder = ""
 $Folders = @{}
 foreach ($Command in (Get-Content .\Input\day7.txt))
 {
     $SplitCommand = $Command -split " "
-    switch ($SplitCommand[0])
+    switch ($SplitCommand[0]) # Check if it's a command or output
     {
         "$" {
-            if ($SplitCommand[1] -eq "cd")
+            if ($SplitCommand[1] -eq "cd") # Change directory
             {
                 switch ($SplitCommand[2])
                 {
@@ -31,41 +61,10 @@ foreach ($Command in (Get-Content .\Input\day7.txt))
     }
 }
 
-function Get-FolderSize ([Object]$Folder, [String]$Path) # Recursive function for finding the size of each folder
-{
-    $Folder.items | ForEach-Object {
-        if ($_ -like "dir *")
-        {
-            $NewPath = $Path + ($_ -split " ")[1] + "/"
-            $Folder.size += [int](Get-FolderSize -Folder $Folders[$NewPath] -Path $NewPath) # Add subfolder's size
-        }
-        else {$Folder.size += [int]($_ -split " ")[0]} # Add file's size
-    }
-    return $Folder.size # Return folder's size to parent folder
-}
+Get-FolderSize -Folder $Folders["/"] -Path "/" | Out-Null # Start recursive folder sizing
 
-Get-FolderSize -Folder $Folders["/"] -Path "/" | Out-Null
+$Part1Output = ($Folders.GetEnumerator() | Where-Object {$_.Value.size -le 100000} | Select-Object -Property @{label = "size"; expression = {[int]$_.Value.size}} | Measure-Object -Property size -Sum).Sum # Sum all folders <= 100000
+Write-Host "Day 7 p1: $Part1Output"
 
-$Part1Output = ($Folders.GetEnumerator() | Where-Object {$_.Value.size -le 100000} | Select-Object -Property @{label = "size"; expression = {[int]$_.Value.size}} | Measure-Object -Property size -Sum).Sum
-
-#$Folders.GetEnumerator() | Select-Object -Property Key, @{label = "size"; expression = {[int]$_.Value.size}} | Sort-Object -Property size
-
-# Output tree
-function Get-FileTree ([Object]$Folder, [String]$Path) # Recursive function for finding the size of each folder
-{
-    Write-Host "$($Indent.Substring(0, $Indent.Length - 4))+---/$(($Path -split "/")[-2])"
-    $Folder.items | Sort-Object | ForEach-Object {
-        if ($_ -like "dir *")
-        {
-            $NewPath = $Path + ($_ -split " ")[1] + "/"
-            $Indent = "|   " + $Indent
-            Get-FileTree -Folder $Folders[$NewPath] -Path $NewPath
-            $Indent = $Indent.Substring(4)
-        }
-        else {Write-Host "$($Indent)    $_"}
-    }
-    Write-Host $Indent
-}
-
-$Indent = "|   "
-Get-FileTree -Folder $Folders["/"] -Path "/" | Out-Null
+#$Indent = "|   "
+#Get-FileTree -Folder $Folders["/"] -Path "/" | Out-Null
