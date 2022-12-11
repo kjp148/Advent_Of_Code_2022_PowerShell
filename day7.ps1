@@ -47,3 +47,24 @@ function Get-FolderSize ([Object]$Folder, [String]$Path) # Recursive function fo
 Get-FolderSize -Folder $Folders["/"] -Path "/" | Out-Null
 
 $Part1Output = ($Folders.GetEnumerator() | Where-Object {$_.Value.size -le 10000} | Select-Object -Property @{label = "size"; expression = {[int]$_.Value.size}} | Measure-Object -Property size -Sum).Sum
+
+#$Folders.GetEnumerator() | Select-Object -Property Key, @{label = "size"; expression = {[int]$_.Value.size}} | Sort-Object -Property size
+
+# Output tree
+function Get-FileTree ([Object]$Folder, [String]$Path) # Recursive function for finding the size of each folder
+{
+    $Folder.items | Sort-Object -Descending | ForEach-Object {
+        if ($_ -like "dir *")
+        {
+            $NewPath = $Path + ($_ -split " ")[1] + "/"
+            Write-Host "$($Indent.Substring(0, $Indent.Length - 4))\---/$(($_ -split " ")[1])/"
+            $Indent = "|   " + $Indent
+            Get-FileTree -Folder $Folders[$NewPath] -Path $NewPath
+            $Indent = $Indent.Substring(4)
+        }
+        else {Write-Host "$($Indent.Substring(4))    $_"}
+    }
+}
+
+$Indent = "|   "
+Get-FileTree -Folder $Folders["/"] -Path "/" | Out-Null
