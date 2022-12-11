@@ -63,8 +63,17 @@ foreach ($Command in (Get-Content .\Input\day7.txt))
 
 Get-FolderSize -Folder $Folders["/"] -Path "/" | Out-Null # Start recursive folder sizing
 
+# Part 1
 $Part1Output = ($Folders.GetEnumerator() | Where-Object {$_.Value.size -le 100000} | Select-Object -Property @{label = "size"; expression = {[int]$_.Value.size}} | Measure-Object -Property size -Sum).Sum # Sum all folders <= 100000
 Write-Host "Day 7 p1: $Part1Output"
+
+# Part 2
+$TotalSystemSize = 70000000
+$UpdateSize = 30000000
+$SizeTarget = $UpdateSize - ($TotalSystemSize - $Folders["/"].size)
+
+$Part2Output = ($Folders.GetEnumerator() | Where-Object {$_.Value.size -ge $SizeTarget} | Select-Object -Property @{label = "size"; expression = {[int]$_.Value.size}} | Sort-Object -Property size)[0].size
+Write-Host "Day 8 p1: $Part2Output"
 
 #$Indent = "|   "
 #Get-FileTree -Folder $Folders["/"] -Path "/" | Out-Null
