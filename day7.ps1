@@ -31,37 +31,19 @@ foreach ($Command in (Get-Content .\Input\day7.txt))
     }
 }
 
-<# Folder sizing pseudocode
-Recursive foreach function
-FolderSearch($CurrentFolder)
-
-function FolderSearch ($Folder)
-{
-    if ($Folders[$Folder].contains(Any folder)
-    {
-        foreach ($Subfolder in ($Folders[$Folder].subfolders))
-        {
-            FolderSearch ($Subfolder)
-        }
-    }
-}#>
-
-# Find size of each folder
-function Get-FolderSize ([Object]$Folder, [String]$Path)
+function Get-FolderSize ([Object]$Folder, [String]$Path) # Recursive function for finding the size of each folder
 {
     $Folder.items | ForEach-Object {
         if ($_ -like "dir *")
         {
             $NewPath = $Path + ($_ -split " ")[1] + "/"
-            $Folder.size += [int](Get-FolderSize -Folder $Folders[$NewPath] -Path $NewPath)
+            $Folder.size += [int](Get-FolderSize -Folder $Folders[$NewPath] -Path $NewPath) # Add subfolder's size
         }
-        else
-        {
-            $Folder.size += [int]($_ -split " ")[0]
-        }
+        else {$Folder.size += [int]($_ -split " ")[0]} # Add file's size
     }
-
-    return $Folder.size
+    return $Folder.size # Return folder's size to parent folder
 }
 
 Get-FolderSize -Folder $Folders["/"] -Path "/" | Out-Null
+
+$Part1Output = ($Folders.GetEnumerator() | Where-Object {$_.Value.size -le 10000} | Select-Object -Property @{label = "size"; expression = {[int]$_.Value.size}} | Measure-Object -Property size -Sum).Sum
