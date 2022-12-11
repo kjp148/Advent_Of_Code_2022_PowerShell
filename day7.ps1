@@ -53,17 +53,18 @@ $Part1Output = ($Folders.GetEnumerator() | Where-Object {$_.Value.size -le 10000
 # Output tree
 function Get-FileTree ([Object]$Folder, [String]$Path) # Recursive function for finding the size of each folder
 {
-    $Folder.items | Sort-Object -Descending | ForEach-Object {
+    Write-Host "$($Indent.Substring(0, $Indent.Length - 4))+---/$(($Path -split "/")[-2])"
+    $Folder.items | Sort-Object | ForEach-Object {
         if ($_ -like "dir *")
         {
             $NewPath = $Path + ($_ -split " ")[1] + "/"
-            Write-Host "$($Indent.Substring(0, $Indent.Length - 4))\---/$(($_ -split " ")[1])/"
             $Indent = "|   " + $Indent
             Get-FileTree -Folder $Folders[$NewPath] -Path $NewPath
             $Indent = $Indent.Substring(4)
         }
-        else {Write-Host "$($Indent.Substring(4))    $_"}
+        else {Write-Host "$($Indent)    $_"}
     }
+    Write-Host $Indent
 }
 
 $Indent = "|   "
