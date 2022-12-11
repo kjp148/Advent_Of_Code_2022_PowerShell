@@ -46,7 +46,7 @@ function Get-FolderSize ([Object]$Folder, [String]$Path) # Recursive function fo
 
 Get-FolderSize -Folder $Folders["/"] -Path "/" | Out-Null
 
-$Part1Output = ($Folders.GetEnumerator() | Where-Object {$_.Value.size -le 10000} | Select-Object -Property @{label = "size"; expression = {[int]$_.Value.size}} | Measure-Object -Property size -Sum).Sum
+$Part1Output = ($Folders.GetEnumerator() | Where-Object {$_.Value.size -le 100000} | Select-Object -Property @{label = "size"; expression = {[int]$_.Value.size}} | Measure-Object -Property size -Sum).Sum
 
 #$Folders.GetEnumerator() | Select-Object -Property Key, @{label = "size"; expression = {[int]$_.Value.size}} | Sort-Object -Property size
 
