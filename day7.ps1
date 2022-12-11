@@ -1,3 +1,4 @@
+# Map folder structure
 $CurrentFolder = ""
 $Folders = @{}
 foreach ($Command in (Get-Content .\Input\day7.txt))
@@ -16,18 +17,17 @@ foreach ($Command in (Get-Content .\Input\day7.txt))
                     }
                     "/" { # Handling for root
                         $CurrentFolder = "/"
-                        $Folders[$CurrentFolder] = @() # Add item to array key=FolderPath value=EmptyArrayForFiles
+                        $Folders[$CurrentFolder] = @{size = 0; items = @()} # Add item to array key=FolderPath value=EmptyArrayForFiles
                     }
                     default { # Add folder to current path
                         $CurrentFolder += "$($SplitCommand[2])/"
-                        $Folders[$CurrentFolder] = @() # Add item to array key=FolderPath value=EmptyArrayForFiles
+                        $Folders[$CurrentFolder] = @{size = 0; items = @()} # Add item to array key=FolderPath value=EmptyArrayForFiles
                     }
                 }
                 # Looks like we can ignore the ls command "ls" {} # List
             }
         }
-        "dir" {} # Folder, ignore
-        default {$Folders[$CurrentFolder] += $Command} # File
+        default {$Folders[$CurrentFolder].items += $Command} # File or folder, add to the hashtable element's array
     }
 }
 
@@ -45,3 +45,23 @@ function FolderSearch ($Folder)
         }
     }
 }#>
+
+# Find size of each folder
+function Get-FolderSize ([Object]$Folder, [String]$Path)
+{
+    $Folder.items | ForEach-Object {
+        if ($_ -like "dir *")
+        {
+            $NewPath = $Path + ($_ -split " ")[1] + "/"
+            $Folder.size += [int](Get-FolderSize -Folder $Folders[$NewPath] -Path $NewPath)
+        }
+        else
+        {
+            $Folder.size += [int]($_ -split " ")[0]
+        }
+    }
+
+    return $Folder.size
+}
+
+Get-FolderSize -Folder $Folders["/"] -Path "/" | Out-Null
